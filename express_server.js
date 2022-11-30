@@ -60,13 +60,19 @@ app.post('/urls', (req, res) => {
   const val = req.body.longURL;
   const key = generateRandomString();
   urlDatabase[key] = val;
-  console.log(urlDatabase);
   res.redirect(`/urls/${key}`)
 })
 
 app.post('/urls/:id/delete', (req, res) => {
   const ID = req.params.id;
   delete urlDatabase[ID];
+  res.redirect('/urls');
+})
+
+app.post('/urls/:id', (req, res) => {
+  const ID = req.params.id;
+  const newURL = req.body.updatedLongURL;
+  urlDatabase[ID] = newURL;
   res.redirect('/urls');
 })
 
