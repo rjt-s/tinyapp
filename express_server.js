@@ -58,6 +58,10 @@ app.get('/u/:id', (req, res) => {
   res.redirect(longURL);
 })
 
+app.get('/register', (req, res) => {
+  res.render('register');
+})
+
 app.post('/urls', (req, res) => {
   const val = req.body.longURL;
   const key = generateRandomString();
