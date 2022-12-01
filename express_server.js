@@ -11,6 +11,9 @@ const urlDatabase = {
   '9sm5xK' : 'http://www.google.com'
 };
 
+// creating a user object
+const users  = {};
+
 // generating a random alphanumeric string of length 6
 const selectionArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q',
 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
@@ -40,7 +43,9 @@ app.get('/urls.json', (req, res) => {
 )
 
 app.get('/urls', (req, res) => {
-  const templateVars = {urls : urlDatabase, username: req.cookies["username"]};
+  // console.log(users);
+  // console.log(req.cookies['user_id']);
+  const templateVars = {urls : urlDatabase, user: users[req.cookies["user_id"]]};
   res.render('urls_index', templateVars);
 });
 
@@ -83,13 +88,24 @@ app.post('/urls/:id', (req, res) => {
 })
 
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
+  // res.cookie('username', req.body.username);
+  // res.cookie('user_id', req.body.user_id);
   res.redirect('/urls');
 })
 
 app.post('/logout', (req, res) => {
-  res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
+})
+
+app.post('/register', (req, res) => {
+  const emailID = req.body.email;
+  const password = req.body.password;
+  const userID = generateRandomString();
+  users[userID] = {id: userID, email: emailID, password: password};
+  res.cookie('user_id', userID);
+  res.redirect('/urls');
+  console.log(users);
 })
 
 app.listen(PORT, () => {
