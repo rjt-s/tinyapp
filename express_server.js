@@ -4,6 +4,7 @@ const PORT = 8080;
 app.set("view engine", "ejs");
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
 
 // url database object
 const urlDatabase = {
@@ -21,7 +22,6 @@ const selectionArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'
 '9'];
 
 // helper functions
-
 function generateRandomString() {
   let randomStr = '';
   for(let i = 1; i <= 6; i++) {
@@ -41,18 +41,15 @@ function checkUserEmail(mail) {
   return false;
 }
 
-app.use(express.urlencoded({ extended: true }));
 
-
-
+// Handling GET requests
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
 
 app.get('/urls.json', (req, res) => {
   res.json(urlDatabase);
- }
-)
+ });
 
 app.get('/urls', (req, res) => {
   // console.log(users);
@@ -61,12 +58,18 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
+app.get('/login', (req, res) => {
+  res.render('login');
+})
+
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  // console.log('from urls/new', users[req.cookies['user_id']]);
+  const templateVars = {urls : urlDatabase, user : users[req.cookies['user_id']]};
+  res.render('urls_new',templateVars);
 })
 
 app.get('/urls/:id', (req, res) => {
-  const templateVars = {id : req.params.id, longURL : urlDatabase[req.params.id]};
+  const templateVars = {id : req.params.id, longURL : urlDatabase[req.params.id], user: users[req.cookies['user_id']]};
   res.render('urls_show', templateVars);
 })
 
@@ -77,7 +80,14 @@ app.get('/u/:id', (req, res) => {
 
 app.get('/register', (req, res) => {
   res.render('register');
-})
+});
+
+app.get('/urls_new', (req, res) => {
+  const templateVars = {urls : urlDatabase, user : users[req.cookies['user_id']]};
+  res.render('urls_new',templateVars);
+});
+
+// POST requests
 
 app.post('/urls', (req, res) => {
   const val = req.body.longURL;
