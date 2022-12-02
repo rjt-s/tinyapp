@@ -20,6 +20,8 @@ const selectionArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'
 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', 
 '9'];
 
+// helper functions
+
 function generateRandomString() {
   let randomStr = '';
   for(let i = 1; i <= 6; i++) {
@@ -28,6 +30,16 @@ function generateRandomString() {
   };
   return randomStr;
 };
+
+function checkUserEmail(mail) {
+  const objArr = Object.values(users);
+  for(let obj of objArr) {
+    if (mail === obj['email']) {
+      return true;
+    }
+  }
+  return false;
+}
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -101,11 +113,19 @@ app.post('/logout', (req, res) => {
 app.post('/register', (req, res) => {
   const emailID = req.body.email;
   const password = req.body.password;
-  const userID = generateRandomString();
-  users[userID] = {id: userID, email: emailID, password: password};
-  res.cookie('user_id', userID);
-  res.redirect('/urls');
-  console.log(users);
+  if (emailID === '' || password === '') {
+    res.status(400);
+    res.send("<h2>400 Error</h2><p>Please fill username and password</p>");
+  } else if (checkUserEmail(req.body.email)) {
+    res.status(400);
+    res.send('<h2>400 Error</h2><p>Email already registered<p>');
+  } else {
+    const userID = generateRandomString();
+    users[userID] = {id: userID, email: emailID, password: password};
+    res.cookie('user_id', userID);
+    res.redirect('/urls');
+    console.log(users);
+  }
 })
 
 app.listen(PORT, () => {
