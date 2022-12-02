@@ -41,6 +41,18 @@ function checkUserEmail(mail) {
   return false;
 }
 
+function checkPassword(mail,password) {
+  const objArr = Object.values(users);
+  for (let obj of objArr) {
+    if (mail === obj['email']) {
+      if (password === obj['password']) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 
 // Handling GET requests
 app.get('/', (req, res) => {
@@ -59,7 +71,8 @@ app.get('/urls', (req, res) => {
 });
 
 app.get('/login', (req, res) => {
-  res.render('login');
+  const templateVars = {urls : urlDatabase, user : users[req.cookies['user_id']]};
+  res.render('login',templateVars);
 })
 
 app.get('/urls/new', (req, res) => {
@@ -79,7 +92,8 @@ app.get('/u/:id', (req, res) => {
 })
 
 app.get('/register', (req, res) => {
-  res.render('register');
+  const templateVars = {urls : urlDatabase, user : users[req.cookies['user_id']]};
+  res.render('register',templateVars);
 });
 
 app.get('/urls_new', (req, res) => {
@@ -112,12 +126,27 @@ app.post('/urls/:id', (req, res) => {
 app.post('/login', (req, res) => {
   // res.cookie('username', req.body.username);
   // res.cookie('user_id', req.body.user_id);
-  res.redirect('/urls');
+  if (!checkUserEmail(req.body.email)) {
+    res.status(403);
+    res.send('<h2>403 Error</h2><p>Email not found</p>')
+  } else {
+    if (!checkPassword(req.body.email, req.body.password)){
+      res.status(403);
+      res.send('<h2>403 Error</h2><p>Wrong Password</p>')
+    } else {
+      for (key in users) {
+        if(users[key]['email'] === req.body.email) {
+          res.cookie('user_id', key);
+        }
+        res.redirect('/urls');
+      }
+    }
+  }
 })
 
 app.post('/logout', (req, res) => {
   res.clearCookie('user_id');
-  res.redirect('/urls');
+  res.redirect('/login');
 })
 
 app.post('/register', (req, res) => {
