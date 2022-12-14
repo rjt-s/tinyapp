@@ -158,11 +158,11 @@ app.get('/urls/:id', (req, res) => {
 });
 
 app.get('/u/:id', (req, res) => {
-  const longURL = urlDatabase[req.params.id]['longURL'];
-  if (!longURL) {
+  const id = urlDatabase[req.params.id];
+  if (!id) {
     return res.send("<h2>Short URL does not exists</h2>")
   } else {
-    return res.redirect(longURL);
+    return res.redirect(id['longURL']);
   }
 });
 
@@ -186,6 +186,10 @@ app.post('/urls', (req, res) => {
   const val = req.body.longURL;
   const key = generateRandomString();
   const userID = req.cookies['user_id'];
+
+  if(!userID) {
+    res.send('Error : please login first');
+  }
   urlDatabase[key] = {longURL: val, userID: userID};
   // console.log("running urldatabase");
   // console.log(urlDatabase);
