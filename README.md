@@ -2,6 +2,10 @@
 
 ### A url shortner service where user can enter their favoriute websites and generate a short url which is easier to share 
 
+## Final Product
+!["Screenshot of main URLs page"](https://github.com/rjt-s/tinyapp/blob/master/docs/mains_url.png?raw=true)
+!["Screenshot of create URLs page"](https://github.com/rjt-s/tinyapp/blob/master/docs/create_tiny.png?raw=true)
+
 ## Dependencies
 
 - Node.js
