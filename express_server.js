@@ -86,16 +86,6 @@ function checkURLOwner(userID, urlID) {
   return urlDatabase[urlID]['userID'] === userID;
 }
 
-// function getUserIDFromTiny(ID) {
-//   for (let key in urlDatabase) {
-
-//     console.log(urlDatabase[key]['userID'], 'urlD');
-//     if (urlDatabase[ID]['userID'] === req.cookie['user_id']) {
-//       return key;
-//     }
-//   }
-//   return 0;
-// }
 
 // Routes
 // Handling GET requests
